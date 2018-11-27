@@ -11,8 +11,8 @@
     <!-- 搜索框 -->
     <el-row class="searchArea">
       <el-col :span="24">
-        <el-input class="searchInput" clearable placeholder="请输入内容">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input class="searchInput" clearable placeholder="请输入内容" v-model="query"  @clear="loadData()">
+          <el-button slot="append" icon="el-icon-search" @click="searchUsers()"></el-button>
         </el-input>
         <el-button type="success" plain>添加用户</el-button>
       </el-col>
@@ -23,7 +23,10 @@
       <el-table-column prop="username" label="姓名" width="180"></el-table-column>
       <el-table-column prop="email" label="邮箱" width="180"></el-table-column>
       <el-table-column prop="mobile" label="电话" width="180"></el-table-column>
-      <el-table-column prop="mg_state" label="用户状态" width="180" >
+      <el-table-column prop="mobile" label="创建日期" width="180">
+        <template slot-scope="scope">{{scope.row.create_time | fmtdate}}</template>
+      </el-table-column>
+      <el-table-column prop="mg_state" label="用户状态" width="180">
         <template slot-scope="scope">
           <!-- scope.row就是当前绑定的数据对象 -->
           <el-switch active-color="#13ce66" inactive-color="#ff4949" v-model="scope.row.mg_state"></el-switch>
@@ -31,18 +34,22 @@
       </el-table-column>
       <el-table-column label="操作" width="300">
         <template slot-scope="scope">
-          <el-button plain size="mini" type="primary" icon="el-icon-edit" circle>
-
-          </el-button>
-          <el-button plain size="mini" type="danger" icon="el-icon-delete" circle>
-
-          </el-button>
-          <el-button plain size="mini" type="success" icon="el-icon-check" circle>
-
-          </el-button>
+          <el-button plain size="mini" type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button plain size="mini" type="danger" icon="el-icon-delete" circle></el-button>
+          <el-button plain size="mini" type="success" icon="el-icon-check" circle></el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 -->
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page=pagenum
+      :page-sizes="[2, 4 ,6 ,8]"
+      :page-size=pagesize
+      layout="total, sizes, prev, pager, next, jumper"
+      :total=total
+    ></el-pagination>
   </el-card>
 </template>
 
@@ -71,6 +78,20 @@ export default {
     this.loadData()
   },
   methods: {
+    searchUsers(){
+        this.loadData()
+        this.pagenum = 1
+    },
+    handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        this.pagesize = val
+        this.loadData()
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.pagenum = val
+        this.loadData()
+      },
     async loadData() {
       const AUTH_TOKEN = localStorage.getItem("token");
       this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
