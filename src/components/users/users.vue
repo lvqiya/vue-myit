@@ -40,7 +40,7 @@
       </el-table-column>
       <el-table-column label="操作" width="300">
         <template slot-scope="scope">
-          <el-button plain size="mini" type="primary" icon="el-icon-edit" circle @click="shoeEdit(scope.row)"></el-button>
+          <el-button plain size="mini" type="primary" icon="el-icon-edit" circle @click="showEdit(scope.row)"></el-button>
           <el-button
             plain
             size="mini"
@@ -138,6 +138,20 @@ export default {
     this.loadData()
   },
   methods: {
+    async editForm(){
+       const res = await this.$http.put(`/users/${this.form.id}`,{
+         mobile : this.form.mobile,
+         email : this.form.email
+       })
+       const {meta:{status,msg}} = res.data
+       if (status === 200) {
+         this.$message.success(msg)
+         this.loadData()
+         this.DialogFormVisibleEdit = false
+       }else{
+         this.$message.error(msg)
+       }
+    },
     showEdit(lit){
        this.DialogFormVisibleEdit = true
        this.form = lit
