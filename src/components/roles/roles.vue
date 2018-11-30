@@ -18,11 +18,11 @@
             <el-col :span=20>
               <el-row v-for="(item2,index) in item1.children" :key="index">
                 <el-col :span=4>
-                     <el-tag type="success" closable>{{item2.authName}}</el-tag>
+                     <el-tag type="success" closable @close="delright(scope.row,item2.id)">{{item2.authName}}</el-tag>
                      <i class="el-icon-arrow-right"></i>
                 </el-col>
                 <el-col :span=20>
-                    <el-tag v-for="(item3,ind) in item2.children" :key="ind"  type="error" closable>{{item3.authName}}</el-tag>
+                    <el-tag v-for="(item3,ind) in item2.children" :key="ind"  type="error" closable @close="delright(scope.row,item3.id)">{{item3.authName}}</el-tag>
                     <i class="el-icon-arrow-right"></i>
                 </el-col>
               </el-row>
@@ -40,7 +40,7 @@
         <template slot-scope="scope">
           <el-button plain size="mini" type="primary" icon="el-icon-edit" circle></el-button>
           <el-button plain size="mini" type="danger" icon="el-icon-delete" circle></el-button>
-          <el-button plain size="mini" type="success" icon="el-icon-check" circle></el-button>
+          <el-button plain size="mini" type="success" icon="el-icon-check" circle ></el-button>
         </template>
       </el-table-column>
     </el-table>
