@@ -12,21 +12,24 @@
         <template slot-scope="scope">
           <el-row v-for="(item1,i) in scope.row.children" :key="i">
             <el-col :span=4>
-                <el-tag>{{item1.authName}}</el-tag>
+                <el-tag closable @close="delright(scope.row,item1.id)">{{item1.authName}}</el-tag>
                 <i class="el-icon-arrow-right"></i>
             </el-col>
             <el-col :span=20>
               <el-row v-for="(item2,index) in item1.children" :key="index">
                 <el-col :span=4>
-                     <el-tag type="success">{{item2.authName}}</el-tag>
+                     <el-tag type="success" closable>{{item2.authName}}</el-tag>
                      <i class="el-icon-arrow-right"></i>
                 </el-col>
                 <el-col :span=20>
-                    <el-tag v-for="(item3,ind) in item2.children" :key="ind"  type="error">{{item3.authName}}</el-tag>
+                    <el-tag v-for="(item3,ind) in item2.children" :key="ind"  type="error" closable>{{item3.authName}}</el-tag>
                     <i class="el-icon-arrow-right"></i>
                 </el-col>
               </el-row>
             </el-col>
+          </el-row>
+          <el-row v-if="scope.row.children.length===0">
+              未分配权限
           </el-row>
         </template>
       </el-table-column>
@@ -55,6 +58,20 @@ export default {
     this.showroles()
   },
   methods: {
+    async delright(role,rightId){
+      
+      const res = await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
+      console.log(111);
+
+      const {data:resData} = res
+      const {meta:{status,msg},data} = resData
+      if (status === 200) {
+        this.$message.success(msg)
+        role.children = data
+      }else{
+        this.$message.error(msg)
+      }
+    },
     async showroles() {
       const res = await this.$http.get(`/roles`)
       console.log(res);
