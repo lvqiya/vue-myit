@@ -74,13 +74,14 @@
           <!-- :default-checked-keys="[5]" -->
         <!-- <el-tree :data="treedata" :props="defaultProps" show-checkbox default-expand-all></el-tree> -->
         <el-tree
-          ref = tree
+          ref = "tree"
           :data="treedata"
           show-checkbox
           node-key="id"
-          :default-expanded-keys="arrexpent"
+          
           :default-checked-keys="arrcheck"
           :props="defaultProps"
+          default-expand-all
         ></el-tree>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisibleright = false">取 消</el-button>
@@ -96,12 +97,13 @@ export default {
     return {
       dialogVisibleright: false,
       list: [],
-      treedata: {},
-      defaultProps:{label:'authName',children:'children'},
-      arrexpent:[],
+      treedata: [],
+      defaultProps:{children: 'children',
+        label: 'authName'},
+      // arrexpent:[],
       arrcheck:[],
       // 修改权限的角色id
-      sroleid:1
+      sroleid:-1
     }
   },
   mounted() {
@@ -109,11 +111,11 @@ export default {
   },
   methods: {
     async setroleright(){
-      console.log(this.sroleid);
-      let arr2 = this.$refs.tree.getCheckedKeys()
-      let arr3 = this.$refs.tree.getHalfCheckedKeys()
+      // console.log(this.sroleid);
+      const arr2 = this.$refs.tree.getCheckedKeys()
+      const arr3 = this.$refs.tree.getHalfCheckedKeys()
       // console.log(arr2,arr3);
-      let arrall = [...arr2,...arr3]
+      const arrall = [...arr2,...arr3]
       // console.log(arrall);
       
        
@@ -121,7 +123,7 @@ export default {
         rids:arrall.join(',')
       })
       const {data:resData} = res
-      const {meta:{status,msg}} = resData
+      const {meta:{status,msg},data} = resData
       if (status === 200) {
         this.dialogVisibleright = false
         this.$message.success(msg)
@@ -135,7 +137,11 @@ export default {
       this.sroleid = role.id
       const res = await this.$http.get(`rights/tree`)
       // console.log(res);
-      this.treedata = res.data.data
+      const {data:resData} = res
+      const { data } = resData
+      this.treedata = data
+      console.log(this.treedata);
+      
       const arr = []
       this.treedata.forEach((item1) => {
         // arr.push(item1.id)
