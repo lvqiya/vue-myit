@@ -8,7 +8,7 @@
             <el-input v-model="searchValue" class="searchInput" clearable placeholder="请输入内容">
                 <el-button @click="handleSearch()" slot="append" icon="el-icon-search"></el-button>
             </el-input>
-            <el-button @click="addGoodDialogFormVisible = true" type="success" plain>添加商品</el-button>
+            <el-button type="success" plain @click="$router.push({name:'goodsadd'})">添加商品</el-button>
         </el-col>
     </el-row>
 
