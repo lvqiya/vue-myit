@@ -36,10 +36,14 @@
                 </el-form-item>
             </el-tab-pane>
 
-
             <el-tab-pane name="2" label="商品参数">商品参数
-
+                <el-form-item v-for="(item,i) in dynamicsParams" :key="i" :label="item.attr_name">
+                    <el-checkbox-group v-model="item.attr_vals">
+                        <el-checkbox border v-for="(item1,index) in item.attr_vals" :key="index" :label="item1"></el-checkbox>
+                    </el-checkbox-group>
+                </el-form-item>
             </el-tab-pane>
+
             <el-tab-pane name="3" label="商品属性">商品属性</el-tab-pane>
             <el-tab-pane name="4" label="商品图片">商品图片</el-tab-pane>
             <el-tab-pane name="5" label="商品内容">商品内容</el-tab-pane>
@@ -55,26 +59,37 @@ export default {
             active: "1",
             form: {},
             options: [],
-            selectedOptions: [],
+            selectedOptions: [1, 3, 6],
             defaultProps: {
-                label:'cat_name',
-                value:'cat_id',
-                children:'children'
-            }
+                label: 'cat_name',
+                value: 'cat_id',
+                children: 'children'
+            },
+            // 动态参数
+            dynamicsParams: []
         }
     },
     created() {
         this.getgoodslist()
     },
     methods: {
-        async tabchange(){
+        async tabchange() {
             if (this.selectedOptions.length !== 3) {
                 this.$message.warning('请先选择三级分类')
             }
             if (this.active === '2') {
-                // const res = await this.$http.
+                const res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=many`)
+
+                // console.log(res);
+
+                this.dynamicsParams = res.data.data
+                // console.log(this.dynamicsParams);
+                this.dynamicsParams.forEach(item => {
+                    item.attr_vals = item.attr_vals.trim().length===0?[]:item.attr_vals.split(',')
+                });
+
             }
-            
+
         },
         handleChange() {
 
@@ -82,7 +97,7 @@ export default {
         async getgoodslist() {
             const res = await this.$http.get(`categories?type=3`)
             // console.log(res);
-            
+
             this.options = res.data.data
         }
     }
