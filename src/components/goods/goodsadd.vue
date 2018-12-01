@@ -56,7 +56,9 @@
                     <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
             </el-tab-pane>
-            <el-tab-pane name="5" label="商品内容">商品内容</el-tab-pane>
+            <el-tab-pane name="5" label="商品内容">商品内容
+                
+            </el-tab-pane>
         </el-tabs>
     </el-form>
 </el-card>
