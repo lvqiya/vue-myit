@@ -9,9 +9,10 @@ import '@/assets/css/index.css'
 import http from '@/assets/plugins/http.js'
 import moment from 'moment'
 import Bread from '@/components/coucom/bread.vue'
-
+import VueQuillEditor from 'vue-quill-editor'
 Vue.use(ElementUI);
 Vue.use(http)
+Vue.use(VueQuillEditor, /* { default global options } */)
 Vue.config.productionTip = false
 Vue.component('my-bread',Bread)
 /* eslint-disable no-new */

@@ -56,8 +56,11 @@
                     <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
             </el-tab-pane>
-            <el-tab-pane name="5" label="商品内容">商品内容
-                
+            <el-tab-pane name="5" label="商品内容">
+                <el-form-item>
+                    <el-button type="success" plain @click="addgoodslist()" class="ff-btn">添加商品</el-button>
+                    <quill-editor v-model="form.goods_introduce"></quill-editor>
+                </el-form-item>
             </el-tab-pane>
         </el-tabs>
     </el-form>
@@ -65,11 +68,31 @@
 </template>
 
 <script>
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 export default {
     data() {
         return {
             active: "1",
-            form: {},
+            form: {
+                // goods_name	商品名称	不能为空
+                // goods_cat	以为','分割的分类列表	不能为空
+                // goods_price	价格	不能为空
+                // goods_number	数量	不能为空
+                // goods_weight	重量	不能为空
+                // goods_introduce	介绍	可以为空
+                // pics	上传的图片临时路径（对象）	可以为空
+                // attrs	商品的参数（数组）	可以为空
+                goods_name: '',
+                goods_cat: '',
+                goods_pric: '',
+                goods_numb: '',
+                goods_weig: '',
+                goods_intr: '',
+                pics: [],
+                attr: [],
+            },
             options: [],
             selectedOptions: [1, 3, 6],
             defaultProps: {
@@ -89,11 +112,37 @@ export default {
         this.getgoodslist()
     },
     methods: {
-        handleSuccess(file) {
+        async addgoodslist() {
+            this.goods_cat = this.selectedOptions.join(',')
+            const res = await this.$http.post(`goods`)
+        },
+        handleSuccess(file, response) {
+
             // console.log(file);
-            file.data.tmp_path
+            // tmp_uploads\75e80b7e6662f93d2eac07692cbf350c.png
+            const
+                meta = file.meta
+            // console.log(meta);
+
+            if (meta.status === 200) {
+
+                this.$message.success(meta.msg)
+                this.form.pics.push({
+                    pic: file.data.tmp_path
+                })
+
+            } else {
+                this.$message.error(meta.msg)
+            }
         },
         handleRemove(file) {
+            const index = this.form.pics.findIndex((item) => {
+                return item.pic === file.response.data.tmp_path
+            })
+            // console.log(index);
+            this.form.pics.splice(index, 1)
+            // console.log(this.form.pics);
+
             // console.log(file);
             // file.response.data.tmp_path
 
@@ -152,6 +201,6 @@ export default {
 }
 
 .ql-editor {
-    min-height: 300px;
+    min-height: 230px;
 }
 </style>
